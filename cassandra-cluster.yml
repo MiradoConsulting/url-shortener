@@ -1,0 +1,71 @@
+version: '3'
+services:
+    CASS1:
+        image: cassandra:3.10
+        command: bash -c 'if [ -z "$$(ls -A /var/lib/cassandra/)" ] ; then sleep 0; fi && /docker-entrypoint.sh cassandra -f'
+        networks:
+            - cassandra_net
+        volumes:
+            - ./c1data:/var/lib/cassandra
+        environment:
+            - CASSANDRA_CLUSTER_NAME=dev_cluster
+            - CASSANDRA_SEEDS=CASS1
+            - HEAP_NEWSIZE=12M
+            - MAX_HEAP_SIZE=1G
+        expose:
+            - 7000
+            - 7001
+            - 9042
+        ulimits:
+            memlock: -1
+            nproc: 32768
+            nofile: 100000
+
+    CASS2:
+        image: cassandra:3.10
+        command: bash -c 'if [ -z "$$(ls -A /var/lib/cassandra/)" ] ; then sleep 60; fi && /docker-entrypoint.sh cassandra -f'
+        networks:
+            - cassandra_net
+        volumes:
+            - ./c2data:/var/lib/cassandra
+        environment:
+            - CASSANDRA_CLUSTER_NAME=dev_cluster
+            - CASSANDRA_SEEDS=CASS1
+            - HEAP_NEWSIZE=12M
+            - MAX_HEAP_SIZE=1G
+        depends_on:
+              - CASS1
+        expose:
+            - 7000
+            - 7001
+            - 9042
+        ulimits:
+            memlock: -1
+            nproc: 32768
+            nofile: 100000
+
+    CASS3:
+        image: cassandra:3.10
+        command: bash -c 'if [ -z "$$(ls -A /var/lib/cassandra/)" ] ; then sleep 120; fi && /docker-entrypoint.sh cassandra -f'
+        networks:
+            - cassandra_net
+        volumes:
+            - ./c3data:/var/lib/cassandra
+        environment:
+            - CASSANDRA_CLUSTER_NAME=dev_cluster
+            - CASSANDRA_SEEDS=CASS1
+            - HEAP_NEWSIZE=12M
+            - MAX_HEAP_SIZE=1G
+        depends_on:
+              - CASS1
+        expose:
+            - 7000
+            - 7001
+            - 9042
+        ulimits:
+            memlock: -1
+            nproc: 32768
+            nofile: 100000
+
+networks:
+    cassandra_net:

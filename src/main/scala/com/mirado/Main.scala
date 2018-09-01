@@ -1,6 +1,7 @@
 package com.mirado
 
 import com.mirado.CassandraCluster.withCluster
+import com.mirado.Configuration.readConfig
 
 import com.datastax.driver.core._
 import scala.concurrent._
@@ -8,26 +9,29 @@ import scala.concurrent.duration._
 import scala.io.Source.fromFile
 import scala.util.Random.alphanumeric
 
+case class Config(inputFile: String, cassandraHost: String)
 case class Url (value: String)
 case class Hash (value: String)
 case class Entry (hash: Hash, url: Url)
 
 object Main {
 
-    def main(args: Array[String]) =
+    implicit val _ = ExecutionContext.global
 
-        withCluster("172.19.0.2", "ks_url_shortener", runProgram) match {
+    def main(args: Array[String]) = {
 
-            case Left(e) =>
-                System.out.println("Unsuccessful: " + e.getMessage)
+        val result = for {
+            config <- readConfig.right
+            result <- withCluster(config, runProgram).right
+        } yield result
 
-            case Right(()) =>
-                System.out.println("Success. Exiting.")
+        result match {
+            case Left(e) => System.out.println("Unsuccessful: " + e.getMessage)
+            case Right(()) => System.out.println("Success. Exiting.")
         }
+    }
 
-    def runProgram(session: Session): Either[Exception, Unit] = {
-
-        implicit val _ = ExecutionContext.global
+    def runProgram(config: Config, session: Session): Either[Exception, Unit] = {
 
         val cassandra = CassandraStore.construct(session)
 

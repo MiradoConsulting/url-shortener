@@ -4,17 +4,16 @@ import com.datastax.driver.core._
 
 object CassandraCluster {
 
-    def withCluster[A](contact: String,
-                       keyspace: String,
-                       action: Session => Either [Exception, A]) = {
+    def withCluster[A](config: Config,
+                       action: (Config, Session) => Either [Exception, A]) = {
 
-        val cluster = prepareCluster(contact)
+        val cluster = prepareCluster(config.cassandraHost)
         try {
             val session = cluster.connect()
-            prepareKeyspace(session, keyspace)
+            prepareKeyspace(session)
             prepareTable(session)
             createIndex(session)
-            action(session)
+            action(config, session)
         } catch {
             case e: Exception => Left(e)
         } finally {
@@ -29,7 +28,7 @@ object CassandraCluster {
                .addContactPoint(contact)
                .build()
 
-    private def prepareKeyspace(session: Session, keyspace: String) =
+    private def prepareKeyspace(session: Session) =
         session.execute(
             s"""
                 CREATE KEYSPACE IF NOT EXISTS ks_url_shortener

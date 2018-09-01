@@ -40,7 +40,7 @@ object Main {
         val storage = makeCassandraStore(session, hashGen)
 
         try {
-            for (lines <- fromFile("/home/john/50k").getLines grouped 32) {
+            for (lines <- fromFile(config.inputFile).getLines grouped 32) {
                 val futures = lines map Url map storage.putOrGet
                 futures foreach {x => Await.result(x, 3000 millis)}
             }

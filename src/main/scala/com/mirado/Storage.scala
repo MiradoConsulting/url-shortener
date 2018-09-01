@@ -21,4 +21,6 @@ class Storage[Store](store:     Store,
             case None =>
                 retry(3, None, () => put(store, genHash(), url))
         }
+
+    def lookup(hash: Hash) = getByHash(store, hash)
 }

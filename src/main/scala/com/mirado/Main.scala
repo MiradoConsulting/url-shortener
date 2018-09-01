@@ -10,7 +10,7 @@ import scala.concurrent.duration._
 import scala.io.Source.fromFile
 import scala.util.Random.alphanumeric
 
-case class Config(inputFile: String, cassandraHost: String)
+case class Config(inputFile: String, cassandraHost: String, urlPrefix: String)
 case class Url (value: String)
 case class Hash (value: String)
 case class Entry (hash: Hash, url: Url)
@@ -32,8 +32,8 @@ object Main {
         }
     }
 
-    def runProgram(config: Config,
-                   session: Session) = {
+    private def runProgram(config: Config,
+                           session: Session) = {
 
         val hashGen = () => Hash(alphanumeric take 10 mkString)
 

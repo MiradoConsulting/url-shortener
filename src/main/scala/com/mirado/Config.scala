@@ -6,7 +6,8 @@ object Configuration {
         for {
             inputFile <- readConfigVal("INPUT_FILE").right
             cassandraHost <- readConfigVal("CASSANDRA_HOST").right
-        } yield Config(inputFile, cassandraHost)
+            urlPrefix <- readConfigVal("URL_PREFIX").right
+        } yield Config(inputFile, cassandraHost, urlPrefix)
 
     private def readConfigVal(key: String) =
         sys.env.get(key) match {

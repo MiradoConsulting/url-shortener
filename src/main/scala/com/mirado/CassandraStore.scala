@@ -33,7 +33,19 @@ class CassandraStore(insert: PreparedStatement,
 
 object CassandraStore {
 
-    def construct(session: Session) = {
+    def makeCassandraStore(session: Session,
+                           genHash: () => Hash) = {
+
+        val cassandra = construct(session)
+
+        new Storage(store     = session,
+                    getByUrl  = cassandra.lookupByUrl,
+                    getByHash = cassandra.lookupByHash,
+                    put       = cassandra.store,
+                    genHash   = genHash)
+    }
+
+    private def construct(session: Session) = {
 
         val cqlInsert = s"""
                           INSERT INTO ks_url_shortener.url_to_hash (url, hash)

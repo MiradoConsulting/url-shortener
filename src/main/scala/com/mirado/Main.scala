@@ -1,6 +1,7 @@
 package com.mirado
 
 import com.mirado.CassandraCluster.withCluster
+import com.mirado.CassandraStore.makeCassandraStore
 import com.mirado.Configuration.readConfig
 
 import com.datastax.driver.core._
@@ -31,17 +32,12 @@ object Main {
         }
     }
 
-    def runProgram(config: Config, session: Session): Either[Exception, Unit] = {
-
-        val cassandra = CassandraStore.construct(session)
+    def runProgram(config: Config,
+                   session: Session) = {
 
         val hashGen = () => Hash(alphanumeric take 10 mkString)
 
-        val storage = new Storage(store     = session,
-                                  getByUrl  = cassandra.lookupByUrl,
-                                  getByHash = cassandra.lookupByHash,
-                                  put       = cassandra.store,
-                                  genHash   = hashGen)
+        val storage = makeCassandraStore(session, hashGen)
 
         try {
             for (lines <- fromFile("/home/john/50k").getLines grouped 32) {

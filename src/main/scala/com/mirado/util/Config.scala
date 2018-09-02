@@ -1,9 +1,9 @@
-package com.mirado
+package com.mirado.util
 
 case class Config(cassandraHost: String,
                   frontHost: String)
 
-object Configuration {
+object Config {
 
     def readConfig =
         for {

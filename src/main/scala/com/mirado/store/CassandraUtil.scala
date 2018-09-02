@@ -1,4 +1,4 @@
-package com.mirado
+package com.mirado.store
 
 import com.datastax.driver.core._
 import com.google.common.util.concurrent._

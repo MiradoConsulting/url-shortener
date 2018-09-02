@@ -1,4 +1,4 @@
-package com.mirado
+package com.mirado.service
 
 import com.twitter.{util => twitter}
 import scala.concurrent.{ExecutionContext, Promise, Future}

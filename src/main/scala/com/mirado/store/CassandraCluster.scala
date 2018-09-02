@@ -1,4 +1,6 @@
-package com.mirado
+package com.mirado.store
+
+import com.mirado.util.Config
 
 import com.datastax.driver.core._
 

@@ -1,9 +1,9 @@
 package com.mirado
 
-import com.mirado.CassandraCluster.withCluster
-import com.mirado.CassandraStore.makeCassandraStore
-import com.mirado.Configuration.readConfig
-import com.mirado.UrlShortenService.runServer
+import com.mirado.service.UrlShortenService.runServer
+import com.mirado.store.CassandraCluster.withCluster
+import com.mirado.store.CassandraStore.makeCassandraStore
+import com.mirado.util.Config
 
 import com.datastax.driver.core.Session
 import scala.util.Random.alphanumeric
@@ -13,7 +13,7 @@ object Main {
     def main(args: Array[String]) = {
 
         val result = for {
-            config <- readConfig.right
+            config <- Config.readConfig.right
             result <- withCluster(config, run).right
         } yield result
 

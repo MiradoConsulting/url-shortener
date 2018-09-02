@@ -1,4 +1,7 @@
-package com.mirado
+package com.mirado.store
+
+import com.mirado.{Entry, Url, Hash}
+import com.mirado.util.Retry.retry
 
 import scala.concurrent._
 
@@ -9,7 +12,6 @@ class Storage[Store](store:     Store,
                      genHash:   ()                 => Hash) {
 
     implicit val _ = ExecutionContext.global
-    import Retry.retry
 
     def putOrGet(url: Url) =
 

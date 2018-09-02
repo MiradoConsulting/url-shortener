@@ -1,4 +1,4 @@
-package com.mirado
+package com.mirado.util
 
 import scala.concurrent._
 

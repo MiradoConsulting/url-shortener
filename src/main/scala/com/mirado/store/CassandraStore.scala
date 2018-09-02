@@ -1,4 +1,6 @@
-package com.mirado
+package com.mirado.store
+
+import com.mirado.{Entry, Url, Hash}
 
 import com.datastax.driver.core._
 import scala.concurrent._

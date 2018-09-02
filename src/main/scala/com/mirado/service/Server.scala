@@ -1,6 +1,9 @@
-package com.mirado
+package com.mirado.service
 
-import com.mirado.FinagleUtil.scalaToTwitterFuture
+import com.mirado.{Entry, Hash, Url}
+import com.mirado.store.Storage
+import com.mirado.service.FinagleUtil.scalaToTwitterFuture
+import com.mirado.util.Config
 
 import com.twitter.finagle.{Http, Service}
 import com.twitter.finagle.http.path.{Path, Root, /, ->}

@@ -11,8 +11,7 @@ object CassandraCluster {
         try {
             val session = cluster.connect()
             prepareKeyspace(session)
-            prepareTable(session)
-            createIndex(session)
+            prepareTables(session)
             action(config, session)
         } catch {
             case e: Exception => Left(e)
@@ -31,25 +30,26 @@ object CassandraCluster {
     private def prepareKeyspace(session: Session) =
         session.execute(
             s"""
-                CREATE KEYSPACE IF NOT EXISTS ks_url_shortener
+                CREATE KEYSPACE IF NOT EXISTS url_shortener
                 WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 2}
                 AND DURABLE_WRITES = true
             """
         )
 
-    private def prepareTable(session: Session) =
+    private def prepareTables(session: Session) = {
+
         session.execute(
             s"""
-                CREATE TABLE IF NOT EXISTS ks_url_shortener.url_to_hash
-                (url text PRIMARY KEY, hash ascii);
+                CREATE TABLE IF NOT EXISTS url_shortener.hash_to_url
+                (hash ascii PRIMARY KEY, url text);
             """
         )
 
-    private def createIndex(session: Session) =
         session.execute(
             s"""
-                CREATE INDEX IF NOT EXISTS idx_hash
-                ON ks_url_shortener.url_to_hash (hash);
+                CREATE TABLE IF NOT EXISTS url_shortener.url_to_hash
+                (url text PRIMARY KEY, hash ascii);
             """
         )
+    }
 }

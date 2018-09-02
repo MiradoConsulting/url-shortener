@@ -17,16 +17,20 @@ To run using `sbt`:\
 
 ### To use:
 Creating a shortened URL:
-```$ curl -X POST http://127.0.0.1:8080/create -d"url= http://www.scala-lang.org" && echo
-http://127.0.0.1:8080/lookup/tK58r6nyOa
+```
+$ curl -X POST http://127.0.0.1:8080/create -d"url=http://www.scala-lang.org" && echo
+
+http://127.0.0.1:8080/lookup/bUEgpuOrUg
 ```
 
 Accessing a shortened URL:
-```$ curl -v http://127.0.0.1:8080/lookup/UZSCbjxrLk
+```
+$ curl -v http://127.0.0.1:8080/lookup/bUEgpuOrUg
+
 *   Trying 127.0.0.1...
 * TCP_NODELAY set
 * Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
-> GET /lookup/UZSCbjxrLk HTTP/1.1
+> GET /lookup/bUEgpuOrUg HTTP/1.1
 > Host: 127.0.0.1:8080
 > User-Agent: curl/7.58.0
 > Accept: */*

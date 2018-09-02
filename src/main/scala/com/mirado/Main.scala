@@ -3,27 +3,18 @@ package com.mirado
 import com.mirado.CassandraCluster.withCluster
 import com.mirado.CassandraStore.makeCassandraStore
 import com.mirado.Configuration.readConfig
+import com.mirado.UrlShortenService.runServer
 
-import com.datastax.driver.core._
-import scala.concurrent._
-import scala.concurrent.duration._
-import scala.io.Source.fromFile
+import com.datastax.driver.core.Session
 import scala.util.Random.alphanumeric
 
-case class Config(inputFile: String, cassandraHost: String, urlPrefix: String)
-case class Url (value: String)
-case class Hash (value: String)
-case class Entry (hash: Hash, url: Url)
-
 object Main {
-
-    implicit val _ = ExecutionContext.global
 
     def main(args: Array[String]) = {
 
         val result = for {
             config <- readConfig.right
-            result <- withCluster(config, runProgram).right
+            result <- withCluster(config, run).right
         } yield result
 
         result match {
@@ -32,21 +23,13 @@ object Main {
         }
     }
 
-    private def runProgram(config: Config,
-                           session: Session) = {
-
-        val hashGen = () => Hash(alphanumeric take 10 mkString)
-
-        val storage = makeCassandraStore(session, hashGen)
-
+    private def run(config: Config, session: Session) =
         try {
-            for (lines <- fromFile(config.inputFile).getLines grouped 32) {
-                val futures = lines map Url map storage.putOrGet
-                futures foreach {x => Await.result(x, 3000 millis)}
-            }
-            Right ()
+            val hashGen = () => Hash(alphanumeric take 10 mkString)
+            val storage = makeCassandraStore(session, hashGen)
+            runServer(config, storage)
+            Right(())
         } catch {
             case e: Exception => Left(e)
         }
-    }
 }

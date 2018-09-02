@@ -1,5 +1,9 @@
 package com.mirado
 
+case class Config(inputFile: String,
+                  cassandraHost: String,
+                  urlPrefix: String)
+
 object Configuration {
 
     def readConfig =

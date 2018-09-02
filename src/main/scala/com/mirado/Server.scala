@@ -32,7 +32,20 @@ class UrlShortenService[Store](config: Config, store: Storage[Store]) extends Se
             case _ => notFound()
         }
 
-    private def lookup(hash: Hash) = ???
+    private def lookup(hash: Hash) = scalaToTwitterFuture {
+        store.lookup(hash) map {
+            case Some(Entry(hash, url)) => {
+                val response = Response(Status.SeeOther)
+                response.headerMap.put("location", url.value)
+                response
+            }
+            case None => {
+                val response = Response(Status.NotFound)
+                response.setContentString(s"hash ${hash.value} not found")
+                response
+            }
+        }
+    }
 
     // Just return the hash instead of redirecting
     private def check(hash: Hash) = scalaToTwitterFuture {
@@ -51,11 +64,12 @@ class UrlShortenService[Store](config: Config, store: Storage[Store]) extends Se
     }
 
     private def create(url: Url) = scalaToTwitterFuture {
-
         store.putOrGet(url) map {
-
-            case Left(l) => ???
-
+            case Left(_) => {
+                val response = Response(Status.InternalServerError)
+                response.setContentString(s"Unable to store url: ${url.value}")
+                response
+            }
             case Right(entry: Entry) => {
                 val response = Response(Status.Ok)
                 response.setContentString(s"${config.urlPrefix}${entry.hash.value}")
@@ -72,7 +86,7 @@ class UrlShortenService[Store](config: Config, store: Storage[Store]) extends Se
 
     private def notFound() = Future {
         val response = Response(Status.NotFound)
-        response.setContentString("Not found")
+        response.setContentString("Route not found")
         response
     }
 }

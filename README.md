@@ -14,3 +14,26 @@ e.g. Setting `FRONT_HOST=http://127.0.0.1:8080` means the service will return sh
 
 To run using `sbt`:\
 ```FRONT_HOST=http://127.0.0.1:8080 CASSANDRA_HOST=172.19.0.2 sbt run```
+
+### To use:
+Creating a shortened URL:
+```$ curl -X POST http://127.0.0.1:8080/create -d"url= http://www.scala-lang.org" && echo
+http://127.0.0.1:8080/lookup/tK58r6nyOa
+```
+
+Accessing a shortened URL:
+```$ curl -v http://127.0.0.1:8080/lookup/UZSCbjxrLk
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
+> GET /lookup/UZSCbjxrLk HTTP/1.1
+> Host: 127.0.0.1:8080
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+< HTTP/1.1 303 See Other
+< location:  http://www.scala-lang.org
+< Content-Length: 0
+< 
+* Connection #0 to host 127.0.0.1 left intact
+```

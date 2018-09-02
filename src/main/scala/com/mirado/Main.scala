@@ -18,7 +18,7 @@ object Main {
         } yield result
 
         result match {
-            case Left(e) => System.out.println("Unsuccessful: " + e.getMessage)
+            case Left(e) => System.out.println(s"Unsuccessful: ${e.getMessage}")
             case Right(()) => System.out.println("Success. Exiting.")
         }
     }

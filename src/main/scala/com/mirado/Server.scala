@@ -72,7 +72,7 @@ class UrlShortenService[Store](config: Config, store: Storage[Store]) extends Se
             }
             case Right(entry: Entry) => {
                 val response = Response(Status.Ok)
-                response.setContentString(s"${config.urlPrefix}${entry.hash.value}")
+                response.setContentString(s"${config.frontHost}/lookup/${entry.hash.value}")
                 response
             }
         }

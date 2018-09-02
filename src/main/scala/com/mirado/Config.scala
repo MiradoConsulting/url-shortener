@@ -1,15 +1,15 @@
 package com.mirado
 
 case class Config(cassandraHost: String,
-                  urlPrefix: String)
+                  frontHost: String)
 
 object Configuration {
 
     def readConfig =
         for {
             cassandraHost <- readConfigVal("CASSANDRA_HOST").right
-            urlPrefix <- readConfigVal("URL_PREFIX").right
-        } yield Config(cassandraHost, urlPrefix)
+            frontHost <- readConfigVal("FRONT_HOST").right
+        } yield Config(cassandraHost, frontHost)
 
     private def readConfigVal(key: String) =
         sys.env.get(key) match {
@@ -17,4 +17,3 @@ object Configuration {
             case Some(v) => Right(v)
         }
 }
-

@@ -3,7 +3,10 @@
 ## Requirements:
 ### Cassandra:
 A *docker-compose* file is included for this purpose.\
-```docker-compose -f cassandra-cluster.yml up```
+```
+docker-compose -f cassandra-cluster.yml up
+```
+_Note: This will take several minutes for the Cassandra nodes to come up the first time._
 
 ### Environment Variables:
 * `CASSANDRA_HOST`: The location of a cassandra host
